@@ -120,6 +120,15 @@
   <data name="AboutVersion" xml:space="preserve">
     <value>Версия</value>
   </data>
+  <data name="AIApiError" xml:space="preserve">
+    <value>Не удалось получить ответ от ИИ.</value>
+  </data>
+  <data name="AIThinking" xml:space="preserve">
+    <value>Думаю...</value>
+  </data>
+  <data name="AIWaiting" xml:space="preserve">
+    <value>ИИ ждет ваш запрос</value>
+  </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Скопировать</value>
   </data>
@@ -224,6 +233,9 @@
   </data>
   <data name="MessageBoxFastSortUnavailableTitle" xml:space="preserve">
     <value>Быстрая сортировка отключена</value>
+  </data>
+  <data name="MessageBoxFailedToOpenAiChat" xml:space="preserve">
+    <value>Не удалось открыть чат ИИ.</value>
   </data>
   <data name="MessageBoxRegExInvalid" xml:space="preserve">
     <value>Одно из регулярных выражений указано неверно</value>
