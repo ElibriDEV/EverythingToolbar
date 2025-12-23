@@ -235,6 +235,9 @@
   <data name="MessageBoxFastSortUnavailableTitle" xml:space="preserve">
     <value>Fast sorting not enabled</value>
   </data>
+  <data name="MessageBoxFailedToOpenAiChat" xml:space="preserve">
+    <value>Failed to open AI chat.</value>
+  </data>
   <data name="MessageBoxRegExInvalid" xml:space="preserve">
     <value>At least one regular expression is invalid.</value>
   </data>
@@ -646,5 +649,6 @@
   <data name="ShortcutOpenSystemContextMenu" xml:space="preserve">
     <value>Open system context menu</value>
   </data>
+  <!-- Another trigger rebuild -->
   <!-- Trigger rebuild -->
 </root>

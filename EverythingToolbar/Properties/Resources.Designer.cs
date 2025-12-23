@@ -510,6 +510,15 @@ namespace EverythingToolbar.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to open AI chat..
+        /// </summary>
+        public static string MessageBoxFailedToOpenAiChat {
+            get {
+                return ResourceManager.GetString("MessageBoxFailedToOpenAiChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to open dialog..
         /// </summary>
         public static string MessageBoxFailedToOpenDialog {

@@ -121,6 +121,22 @@ namespace EverythingToolbar.Data
 
         public void Open()
         {
+            if (IsAiResult)
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo("https://chatai-owu.finam.ru/") { UseShellExecute = true });
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, "Failed to open AI chat website.");
+                    FluentMessageBox
+                        .CreateError(Resources.MessageBoxFailedToOpenAiChat, Resources.MessageBoxErrorTitle)
+                        .ShowDialogAsync();
+                }
+                return;
+            }
+
             try
             {
                 var path = FullPathAndFileName;
