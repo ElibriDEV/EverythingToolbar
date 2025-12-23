@@ -38,6 +38,7 @@ namespace EverythingToolbar.Controls
         private Point _dragStart;
         private bool _isScrollBarDragging;
         private VirtualizingCollection<SearchResult>? _searchResultsCollection;
+        public AiSearchResultProvider AiProvider => _aiProvider;
         private readonly AiSearchResultProvider _aiProvider;
         private SynchronizationContext _synchronizationContext = new();
         private readonly DispatcherTimer _busyIndicatorTimer;

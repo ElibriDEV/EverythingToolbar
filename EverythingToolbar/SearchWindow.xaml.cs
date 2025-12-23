@@ -5,6 +5,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using EverythingToolbar.Controls;
 using EverythingToolbar.Helpers;
 using EverythingToolbar.Search;
 
@@ -18,6 +19,8 @@ namespace EverythingToolbar
 
         private bool _dwmFlushOnRender;
         private bool _isFirstShow = true;
+
+        public SearchResultsView ResultsView => SearchResultsView;
 
         private SearchWindow()
         {

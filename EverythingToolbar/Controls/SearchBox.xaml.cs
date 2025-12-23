@@ -82,13 +82,14 @@ namespace EverythingToolbar.Controls
                 UpdateSearchTerm(HistoryManager.Instance.GetNextItem());
                 e.Handled = true;
             }
-            else if (
-                Keyboard.Modifiers == ModifierKeys.None
-                && e.Key == Key.Enter
-                && !ToolbarSettings.User.IsSearchAsYouType
-            )
+            else if (Keyboard.Modifiers == ModifierKeys.None && e.Key == Key.Enter)
             {
+                SearchWindow.Instance.ResultsView.AiProvider.SearchNow();
+
+                // Always update search term on enter
                 SearchTerm = TextBox.Text;
+
+                EventDispatcher.Instance.InvokeGlobalKeyEvent(this, e);
                 e.Handled = true;
             }
             else if (
@@ -100,7 +101,6 @@ namespace EverythingToolbar.Controls
                 || e.Key == Key.Up
                 || e.Key == Key.Down
                 || e.Key == Key.Escape
-                || e.Key == Key.Enter
                 || e.SystemKey == Key.Enter // When Alt is held
                 || (
                     e.Key is >= Key.D0 and <= Key.D9 or Key.I or Key.B or Key.U or Key.R

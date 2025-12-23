@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Threading;
+using System.Windows;
 using EverythingToolbar.Data;
 using EverythingToolbar.Helpers;
 using EverythingToolbar.Properties;
 using Peter;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace EverythingToolbar.Search
 {
@@ -13,8 +15,8 @@ namespace EverythingToolbar.Search
     {
         private readonly SearchResult _aiResult;
         private string _currentQuery;
-        private bool _isBusy;
-
+        private string _pendingQuery;
+        private readonly DispatcherTimer _searchTimer;
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -22,18 +24,7 @@ namespace EverythingToolbar.Search
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public bool IsBusy
-        {
-            get => _isBusy;
-            private set
-            {
-                if (_isBusy != value)
-                {
-                    _isBusy = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public bool IsBusy => false;
 
         public AiSearchResultProvider()
         {
@@ -42,6 +33,9 @@ namespace EverythingToolbar.Search
                 IsAiResult = true,
                 AiResponse = Resources.AIWaiting
             };
+
+            _searchTimer = new DispatcherTimer { Interval = System.TimeSpan.FromSeconds(3) };
+            _searchTimer.Tick += (s, e) => SearchNow();
         }
 
         public Task<int> FetchCount(int pageSize, bool isAsync)
@@ -61,24 +55,40 @@ namespace EverythingToolbar.Search
 
         public void SetQuery(string query)
         {
-            if (query == _currentQuery)
+            _searchTimer.Stop();
+            _pendingQuery = query;
+
+            if (string.IsNullOrEmpty(_pendingQuery))
+            {
+                _currentQuery = "";
+                _aiResult.AiResponse = Resources.AIWaiting;
+            }
+            else
+            {
+                _searchTimer.Start();
+            }
+        }
+
+        public void SearchNow()
+        {
+            _searchTimer.Stop();
+
+            if (_pendingQuery == _currentQuery)
                 return;
 
-            _currentQuery = query;
+            _currentQuery = _pendingQuery;
 
-            if (string.IsNullOrEmpty(query))
+            if (string.IsNullOrEmpty(_currentQuery))
             {
                 _aiResult.AiResponse = Resources.AIWaiting;
                 return;
             }
 
             _aiResult.AiResponse = Resources.AIThinking;
-            IsBusy = true;
             Task.Run(async () =>
             {
                 var response = await AIClient.GetResponse(_currentQuery);
                 _aiResult.AiResponse = response;
-                IsBusy = false;
             });
         }
     }
