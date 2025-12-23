@@ -34,7 +34,7 @@ namespace EverythingToolbar.Search
                 AiResponse = Resources.AIWaiting
             };
 
-            _searchTimer = new DispatcherTimer { Interval = System.TimeSpan.FromSeconds(3) };
+            _searchTimer = new DispatcherTimer { Interval = System.TimeSpan.FromSeconds(1) };
             _searchTimer.Tick += (s, e) => SearchNow();
         }
 
