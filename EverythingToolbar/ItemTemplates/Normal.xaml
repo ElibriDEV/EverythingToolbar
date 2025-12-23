@@ -3,29 +3,50 @@
                     xmlns:c="clr-namespace:EverythingToolbar.Converters;assembly=EverythingToolbar">
     
     <DataTemplate x:Key="SearchResultsViewTemplate">
-        <Grid x:Name="ListViewItem" Margin="0, 0, 0, 4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Image Source="{Binding Icon}"
-                   Width="16"
-                   Height="16"
-                   Margin="0, 5, 0, 0" />
-            <ContentControl Content="{Binding HighlightedFileName, Converter={c:HighlightedTextConverter}, ConverterParameter=12, Mode=OneTime}"
-                            Grid.Column="1"
-                            VerticalAlignment="Bottom"
-                            Margin="0, 7, 0, 4"
-                            ToolTip="{Binding FileName}"
-                            Foreground="{DynamicResource SearchResultFileName}" />
-            <TextBlock Grid.Column="2"
-                       VerticalAlignment="Bottom"
-                       Margin="10, 5, 10, 6"
-                       FontSize="10pt"
-                       Foreground="{DynamicResource SearchResultDateModified}"
-                       Text="{Binding HumanReadableDateModified}" />
+        <Grid>
+            <Grid x:Name="FileResult" Margin="0, 0, 0, 4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Image Source="{Binding Icon}"
+                       Width="16"
+                       Height="16"
+                       Margin="0, 5, 0, 0" />
+                <ContentControl Content="{Binding HighlightedFileName, Converter={c:HighlightedTextConverter}, ConverterParameter=12, Mode=OneTime}"
+                                Grid.Column="1"
+                                VerticalAlignment="Bottom"
+                                Margin="0, 7, 0, 4"
+                                ToolTip="{Binding FileName}"
+                                Foreground="{DynamicResource SearchResultFileName}" />
+                <TextBlock Grid.Column="2"
+                           VerticalAlignment="Bottom"
+                           Margin="10, 5, 10, 6"
+                           FontSize="10pt"
+                           Foreground="{DynamicResource SearchResultDateModified}"
+                           Text="{Binding HumanReadableDateModified}" />
+            </Grid>
+            <Grid x:Name="AiResult" Margin="0, 0, 0, 4" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image Source="/Images/AppIcon.ico" Width="16" Height="16" Margin="0, 5, 0, 0" />
+                <TextBlock Text="{Binding AiResponse}"
+                           Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Margin="0, 7, 0, 4"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource SearchResultFileName}" />
+            </Grid>
         </Grid>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding IsAiResult}" Value="True">
+                <Setter TargetName="FileResult" Property="Visibility" Value="Collapsed" />
+                <Setter TargetName="AiResult" Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
     </DataTemplate>
     
 </ResourceDictionary>

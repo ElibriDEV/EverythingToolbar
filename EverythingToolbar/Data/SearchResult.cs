@@ -29,6 +29,20 @@ namespace EverythingToolbar.Data
 
         public bool IsFile { get; init; }
 
+        public bool IsAiResult { get; init; }
+
+        private string _aiResponse;
+        public string AiResponse
+        {
+            get => _aiResponse;
+            set
+            {
+                _aiResponse = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public string FullPathAndFileName { get; init; }
 
         public string Path => System.IO.Path.GetDirectoryName(FullPathAndFileName) ?? "";

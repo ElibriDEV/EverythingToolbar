@@ -38,6 +38,7 @@ namespace EverythingToolbar.Controls
         private Point _dragStart;
         private bool _isScrollBarDragging;
         private VirtualizingCollection<SearchResult>? _searchResultsCollection;
+        private readonly AiSearchResultProvider _aiProvider;
         private SynchronizationContext _synchronizationContext = new();
         private readonly DispatcherTimer _busyIndicatorTimer;
         private const int BusyIndicatorDelayMilliseconds = 2000;
@@ -46,6 +47,7 @@ namespace EverythingToolbar.Controls
         {
             InitializeComponent();
 
+            _aiProvider = new AiSearchResultProvider();
             SearchState.Instance.PropertyChanged += (_, _) => UpdateSearchResultsProvider(SearchState.Instance);
             EventDispatcher.Instance.GlobalKeyEvent += OnKeyPressed;
             SearchResultsListView.PreviewKeyDown += OnKeyPressed;
@@ -70,6 +72,8 @@ namespace EverythingToolbar.Controls
 
         private void UpdateSearchResultsProvider(SearchState searchState)
         {
+            _aiProvider.SetQuery(searchState.SearchTerm);
+
             if (ToolbarSettings.User.IsHideEmptySearchResults && string.IsNullOrEmpty(searchState.SearchTerm))
             {
                 _searchResultsCollection = null;
@@ -78,12 +82,13 @@ namespace EverythingToolbar.Controls
                 return;
             }
 
-            SearchResultProvider newProvider = new(searchState, _synchronizationContext);
+            var fileProvider = new SearchResultProvider(searchState, _synchronizationContext);
+            var compositeProvider = new CompositeSearchResultProvider(_aiProvider, fileProvider);
 
             if (_searchResultsCollection == null)
             {
                 _searchResultsCollection = new VirtualizingCollection<SearchResult>(
-                    newProvider,
+                    compositeProvider,
                     PageSize,
                     _synchronizationContext
                 );
@@ -105,7 +110,7 @@ namespace EverythingToolbar.Controls
             }
             else
             {
-                _searchResultsCollection?.UpdateProvider(newProvider);
+                _searchResultsCollection?.UpdateProvider(compositeProvider);
             }
 
             SearchResultsListView.ItemsSource = _searchResultsCollection;

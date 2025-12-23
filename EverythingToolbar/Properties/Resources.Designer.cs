@@ -150,6 +150,33 @@ namespace EverythingToolbar.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to get response from AI..
+        /// </summary>
+        public static string AIApiError {
+            get {
+                return ResourceManager.GetString("AIApiError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AI is waiting for your request.
+        /// </summary>
+        public static string AIWaiting {
+            get {
+                return ResourceManager.GetString("AIWaiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thinking....
+        /// </summary>
+        public static string AIThinking {
+            get {
+                return ResourceManager.GetString("AIThinking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string ContextMenuCopy {

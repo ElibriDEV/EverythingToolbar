@@ -53,6 +53,7 @@
 
             <Style x:Key="ListViewItemStyle"
                    TargetType="{x:Type ListViewItem}">
+                <!--1. Setters-->
                 <Setter Property="FocusVisualStyle"
                         Value="{x:Null}" />
                 <Setter Property="SnapsToDevicePixels"
@@ -63,14 +64,6 @@
                         Value="{DynamicResource ListViewItemMargin}" />
                 <Setter Property="ContextMenu"
                         Value="{StaticResource ListViewItemContextMenu}" />
-                <EventSetter Event="PreviewMouseLeftButtonUp"
-                             Handler="SingleClickSearchResult" />
-                <EventSetter Event="PreviewMouseDoubleClick"
-                             Handler="DoubleClickSearchResult" />
-                <EventSetter Event="PreviewMouseDown"
-                             Handler="OnListViewItemMouseDown" />
-                <EventSetter Event="MouseMove"
-                             Handler="OnListViewItemMouseMove" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -117,6 +110,25 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+
+                <!--2. EventSetters-->
+                <EventSetter Event="PreviewMouseLeftButtonUp"
+                             Handler="SingleClickSearchResult" />
+                <EventSetter Event="PreviewMouseDoubleClick"
+                             Handler="DoubleClickSearchResult" />
+                <EventSetter Event="PreviewMouseDown"
+                             Handler="OnListViewItemMouseDown" />
+                <EventSetter Event="MouseMove"
+                             Handler="OnListViewItemMouseMove" />
+
+                <!--3. Triggers-->
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsAiResult}"
+                                 Value="True">
+                        <Setter Property="ContextMenu"
+                                Value="{x:Null}" />
+                    </DataTrigger>
+                </Style.Triggers>
             </Style>
 
         </ResourceDictionary>
