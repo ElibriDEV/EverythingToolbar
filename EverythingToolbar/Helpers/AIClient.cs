@@ -12,7 +12,7 @@ namespace EverythingToolbar.Helpers
     {
         private static readonly ILogger Logger = ToolbarLogger.GetLogger<AIClient>();
         private static readonly HttpClient HttpClient = new HttpClient();
-        private const string ApiUrl = "https://n8n-dev.finam.ru/webhook/7c1e771d-e101-4d36-a83a-e3023ecc767c";
+        private const string ApiUrl = "https://n8n.whotrades.com/webhook/7c1e771d-e101-4d36-a83a-e3023ecc767c";
 
         private class AIRequest
         {
