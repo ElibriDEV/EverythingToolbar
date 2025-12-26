@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using Config.Net;
 using EverythingToolbar.Helpers;
+using Microsoft.Win32;
 
 namespace EverythingToolbar
 {
@@ -124,6 +126,9 @@ namespace EverythingToolbar
 
         [Option(DefaultValue = "")]
         string VersionBeforeUpdate { get; set; }
+
+        [Option(DefaultValue = "")]
+        string DeviceCode { get; set; }
     }
 
     public sealed class ToolbarSettingsWrapper(IToolbarSettings settings) : INotifyPropertyChanged
@@ -638,14 +643,48 @@ namespace EverythingToolbar
                 }
             }
         }
+
+        public string DeviceCode
+        {
+            get => settings.DeviceCode;
+            set
+            {
+                if (settings.DeviceCode != value)
+                {
+                    settings.DeviceCode = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
     }
 
-    public abstract class ToolbarSettings
+    public static class ToolbarSettings
     {
-        private static readonly IToolbarSettings UserSettings = new ConfigurationBuilder<IToolbarSettings>()
-            .UseIniFile(Path.Combine(Utils.GetConfigDirectory(), "settings.ini"))
-            .Build();
+        private static readonly IToolbarSettings UserSettings;
+        public static readonly ToolbarSettingsWrapper User;
 
-        public static readonly ToolbarSettingsWrapper User = new(UserSettings);
+        static ToolbarSettings()
+        {
+            UserSettings = new ConfigurationBuilder<IToolbarSettings>()
+                .UseIniFile(Path.Combine(Utils.GetConfigDirectory(), "settings.ini"))
+                .Build();
+
+            if (string.IsNullOrEmpty(UserSettings.DeviceCode))
+            {
+                try
+                {
+                    using (RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Cryptography", false))
+                    {
+                        UserSettings.DeviceCode = key?.GetValue("MachineGuid")?.ToString();
+                    }
+                }
+                catch
+                {
+                    UserSettings.DeviceCode = null;
+                }
+            }
+
+            User = new ToolbarSettingsWrapper(UserSettings);
+        }
     }
 }

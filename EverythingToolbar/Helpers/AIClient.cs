@@ -1,9 +1,11 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using EverythingToolbar.Properties;
+using Microsoft.Win32;
 using NLog;
 
 namespace EverythingToolbar.Helpers
@@ -17,7 +19,15 @@ namespace EverythingToolbar.Helpers
         private class AIRequest
         {
             public string user_request { get; set; }
+            public Metadata metadata { get; set; }
         }
+
+        private class Metadata
+        {
+            public string device_name { get; set; }
+            public string device_code { get; set; }
+        }
+
 
         private class AIResponse
         {
@@ -28,7 +38,17 @@ namespace EverythingToolbar.Helpers
         {
             try
             {
-                var request = new AIRequest { user_request = query };
+                string path = Path.Combine(Registry.LocalMachine.Name, @"SOFTWARE\Microsoft\SQMClient");
+                Guid machineId = new Guid((string)Registry.GetValue(path, "MachineId", null));
+                var request = new AIRequest
+                {
+                    user_request = query,
+                    metadata = new Metadata
+                    {
+                        device_name = Environment.MachineName,
+                        device_code = machineId.ToString()
+                    }
+                };
                 var jsonRequest = JsonSerializer.Serialize(request);
                 var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
