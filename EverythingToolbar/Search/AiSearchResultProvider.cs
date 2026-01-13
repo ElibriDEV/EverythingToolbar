@@ -34,7 +34,7 @@ namespace EverythingToolbar.Search
                 AiResponse = Resources.AIWaiting
             };
 
-            _searchTimer = new DispatcherTimer { Interval = System.TimeSpan.FromSeconds(1) };
+            _searchTimer = new DispatcherTimer { Interval = System.TimeSpan.FromSeconds(2) };
             _searchTimer.Tick += (s, e) => SearchNow();
         }
 
@@ -88,7 +88,10 @@ namespace EverythingToolbar.Search
             Task.Run(async () =>
             {
                 var response = await AIClient.GetResponse(_currentQuery);
-                _aiResult.AiResponse = response;
+                if (response != null)
+                {
+                    _aiResult.AiResponse = response;
+                }
             });
         }
     }

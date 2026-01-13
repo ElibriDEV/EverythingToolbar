@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using EverythingToolbar.Properties;
 using Microsoft.Win32;
@@ -15,6 +16,7 @@ namespace EverythingToolbar.Helpers
         private static readonly ILogger Logger = ToolbarLogger.GetLogger<AIClient>();
         private static readonly HttpClient HttpClient = new HttpClient();
         private const string ApiUrl = "https://n8n.whotrades.com/webhook/7c1e771d-e101-4d36-a83a-e3023ecc767c";
+        private static CancellationTokenSource _cancellationTokenSource;
 
         private class AIRequest
         {
@@ -36,6 +38,10 @@ namespace EverythingToolbar.Helpers
 
         public static async Task<string> GetResponse(string query)
         {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = _cancellationTokenSource.Token;
+
             try
             {
                 string path = Path.Combine(Registry.LocalMachine.Name, @"SOFTWARE\Microsoft\SQMClient");
@@ -52,7 +58,7 @@ namespace EverythingToolbar.Helpers
                 var jsonRequest = JsonSerializer.Serialize(request);
                 var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-                var response = await HttpClient.PostAsync(ApiUrl, content);
+                var response = await HttpClient.PostAsync(ApiUrl, content, cancellationToken);
                 response.EnsureSuccessStatusCode();
 
                 var jsonResponse = await response.Content.ReadAsStringAsync();
@@ -60,8 +66,18 @@ namespace EverythingToolbar.Helpers
 
                 return aiResponse?.output ?? Resources.AIApiError;
             }
+            catch (OperationCanceledException)
+            {
+                Logger.Info("AI request was cancelled.");
+                return null;
+            }
             catch (Exception ex)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Logger.Info("AI request was cancelled.");
+                    return null;
+                }
                 Logger.Error(ex, "Failed to get AI response.");
                 return Resources.AIApiError;
             }
